@@ -1,6 +1,13 @@
-# Multithreaded Rust Web-Server (Concurrency)
+# Multithreaded Rust Web-Server
 
-## Commit 1
+Module 06: Concurrency
+
+```credential
+Nama  : Muhammad Milian Alkindi
+Kelas : AdPro-B (Reguler)
+```
+
+## Commit 1: Handle-connection, check response
 
 Dibuat fungsi `handle_connection` untuk membaca isi dari TcpStream yang didapatkan dari listener yang memonitor address `127.0.0.1:7878`.
 Didalamnya, digunakan `buf_reader` untuk membaca TcpStream tersebut dengan efisien (karena menggunakan buffering).
@@ -10,7 +17,7 @@ Ini berlangsung hingga `buf_reader` menemukan baris kosong, kemudian String yang
 
 Terakhir, isi dari `http_request` diprint menggunakan `println!`.
 
-## Commit 2
+## Commit 2: Returning HTML
 
 Fungsi `handle_connection` dimodifikasi untuk menampilkan file html.
 
@@ -22,7 +29,7 @@ Ketiga variabel tersebut membentuk String `response` yang kemudian dikirim kemba
 
 ![Commit 2 Capture](assets/images/commit2_capture.jpg)
 
-## Commit 3
+## Commit 3: Validating request and selectively responding
 
 Sebelumnya, program akan selalu mengembalikan response yang sama untuk semua request dari client. Di tahap ini, fungsi `handle_connection` dimodifikasi lagi untuk memberikan response yang berbeda apabila request dari path yang tidak sesuai (misal: `127.0.0.1:7878/bad`)
 
@@ -87,7 +94,7 @@ Kode hasil refactor lebih mudah dibaca dan akan lebih mudah untuk dimodifikasi a
 
 ![Commit 3 Capture](assets/images/commit3_capture.jpg)
 
-## Commit 4
+## Commit 4: Simulation of slow request
 
 Fungsi `handle_connection` diubah kembali untuk menambahkan simulasi *slow-response*.
 
@@ -99,7 +106,7 @@ Ketika ada client yang mengirim request ke `127.0.0.1:7878/sleep`, maka request 
 Ini dikarenakan web-server masih *single-threaded*, dimana semua proses berjalan dalam satu *thread* saja.
 Hal ini akan sangat mengganggu apabila web-server diakses oleh banyak client.
 
-## Commit 5
+## Commit 5: Multithreaded server using Threadpool
 
 Untuk mengimplementasikan *multi-threading* di web-server, dibuat `ThreadPool` untuk mengelola sejumlah *thread* yang berjalan serentak.
 Dibuat juga `Worker` yang bertugas menerima dan menjalankan kode yang dikirimkan ke `ThreadPool`.
