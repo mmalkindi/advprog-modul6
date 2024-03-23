@@ -86,3 +86,15 @@ Sisa dari kode yang sebelumnya duplikat sudah tidak duplikat lagi.
 Kode hasil refactor lebih mudah dibaca dan akan lebih mudah untuk dimodifikasi apabila ingin menambahkan response baru lainnya.
 
 ![Commit 3 Capture](assets/images/commit3_capture.jpg)
+
+## Commit 4
+
+Fungsi `handle_connection` diubah kembali untuk menambahkan simulasi *slow-response*.
+
+Pertama, pemilihan `status_line` dan `filename` diubah dari menggunakan `if-else` menjadi `match`.
+Ketika request mengarah ke address `/sleep`, maka akan dijalankan `thread::sleep(Duration::from_secs(5));` sebelum menetapkan isi `status_line` dan `filename`.
+Kode tersebut akan menunda (*sleep*) *thread*  selama 5 detik sebelum lanjut ke baris selanjutnya.
+
+Ketika ada client yang mengirim request ke `127.0.0.1:7878/sleep`, maka request yang dikirim setelahnya akan harus menunggu 5 detik sebelum dapat diproses oleh server.
+Ini dikarenakan web-server masih *single-threaded*, dimana semua proses berjalan dalam satu *thread* saja.
+Hal ini akan sangat mengganggu apabila web-server diakses oleh banyak client.
