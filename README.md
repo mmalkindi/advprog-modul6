@@ -98,3 +98,16 @@ Kode tersebut akan menunda (*sleep*) *thread*  selama 5 detik sebelum lanjut ke 
 Ketika ada client yang mengirim request ke `127.0.0.1:7878/sleep`, maka request yang dikirim setelahnya akan harus menunggu 5 detik sebelum dapat diproses oleh server.
 Ini dikarenakan web-server masih *single-threaded*, dimana semua proses berjalan dalam satu *thread* saja.
 Hal ini akan sangat mengganggu apabila web-server diakses oleh banyak client.
+
+## Commit 5
+
+Untuk mengimplementasikan *multi-threading* di web-server, dibuat `ThreadPool` untuk mengelola sejumlah *thread* yang berjalan serentak.
+Dibuat juga `Worker` yang bertugas menerima dan menjalankan kode yang dikirimkan ke `ThreadPool`.
+Ada juga `Job` yang berisi informasi "tugas" yang akan kemudian dijalankan oleh `Worker`.
+
+Disiapkan *channel* untuk memfasilitasi komunikasi antara `ThreadPool` dengan `Worker`.
+Ketika `ThreadPool` menerima permintaan untuk menjalankan sebuah `Job` (method `execute` dipanggil), sinyal akan dikirimkan oleh *sender* ke *receiver* Worker yang tidak sedang dikunci (sedang menerima `Job`) melalui *channel*.
+
+Di dalam Worker, ada satu thread yang looping menunggu masuknya data (*receiver*).
+Pada saat data diterima, Worker akan mengunci *receiver* untuk menjalankan proses tersebut.
+Setelah proses selesai dijalankan, *lock* pada *receiver* dilepas sehingga Worker dapat menerima dan menjalankan Job berikutnya.
